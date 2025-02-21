@@ -1,5 +1,9 @@
 import { MIN_PASSPHRASE_LENGTH, MIN_PASSPHRASE_WORDS } from './constants'
 
+/**
+ * @param {Array<string>} wordsArray
+ * @returns {boolean}
+ */
 export const isPassphraseSafe = (wordsArray) => {
   if (!wordsArray?.length || wordsArray.length < MIN_PASSPHRASE_WORDS) {
     return false

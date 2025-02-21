@@ -1,5 +1,9 @@
 import { COMMON_PASSWORDS } from './constants'
 
+/**
+ * @param {string} password
+ * @returns {boolean}
+ */
 export const isPasswordSafe = (password) => {
   if (password && password.length < 5) {
     return false
