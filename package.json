@@ -1,6 +1,6 @@
 {
   "name": "pearpass-utils-password-check",
-  "version": "0.0.`",
+  "version": "0.0.1",
   "description": "utility for checking the strength of password and passphrase",
   "main": "index.js",
   "scripts": {
