@@ -9,7 +9,7 @@ export const isPasswordSafe = (password, rulesConfig) => {
   const rules = {
     minLength: password.length >= length,
     hasSymbols: includeSpecialChars
-      ? /[!@#$%^&*(),.?":{}|<>]/.test(password)
+      ? /[[!@#$%^&*()_+\[\]{}|;:,.<>?]]/.test(password)
       : true
   }
 
