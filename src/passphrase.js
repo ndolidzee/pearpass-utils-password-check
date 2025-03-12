@@ -1,34 +1,22 @@
-import { MIN_PASSPHRASE_LENGTH, MIN_PASSPHRASE_WORDS } from './constants'
-
 /**
  * @param {Array<string>} wordsArray
- * @returns {boolean}
+ * @param {{ capitalLetters: boolean, symbols: boolean, numbers: boolean, words: number }} rulesConfig
+ * @returns {{ isSafe: boolean, rules: Record<string, boolean> }}
  */
-export const isPassphraseSafe = (wordsArray) => {
-  if (!wordsArray?.length || wordsArray.length < MIN_PASSPHRASE_WORDS) {
-    return false
+export const isPassphraseSafe = (wordsArray, rulesConfig) => {
+  const { capitalLetters, symbols, numbers, words } = rulesConfig
+
+  const rules = {
+    minWords: wordsArray?.length >= words,
+    uniqueWords:
+      new Set(wordsArray.map((word) => word.replace(/[^a-zA-Z]/g, ''))).size ===
+      wordsArray.length,
+    capitalLetters: capitalLetters ? /[A-Z]/.test(wordsArray.join('')) : true,
+    symbols: symbols
+      ? /[!@#$%^&*(),.?":{}|<>]/.test(wordsArray.join(''))
+      : true,
+    numbers: numbers ? /\d/.test(wordsArray.join('')) : true
   }
 
-  const passphrase = wordsArray.join('')
-  if (passphrase.length < MIN_PASSPHRASE_LENGTH) {
-    return false
-  }
-
-  const hasUpperCase = /[A-Z]/.test(passphrase)
-  const hasLowerCase = /[a-z]/.test(passphrase)
-  const hasNumber = /\d/.test(passphrase)
-  const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(passphrase)
-
-  if (!hasUpperCase || !hasLowerCase || !hasNumber || !hasSymbol) {
-    return false
-  }
-
-  const cleanWords = wordsArray.map((word) => word.replace(/[^a-zA-Z]/g, ''))
-  const wordSet = new Set(cleanWords)
-
-  if (wordSet.size !== cleanWords.length) {
-    return false
-  }
-
-  return true
+  return Object.values(rules).every(Boolean)
 }
