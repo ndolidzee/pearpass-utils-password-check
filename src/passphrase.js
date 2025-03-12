@@ -3,8 +3,13 @@
  * @param {{ capitalLetters: boolean, symbols: boolean, numbers: boolean, words: number }} rulesConfig
  * @returns {{ isSafe: boolean, rules: Record<string, boolean> }}
  */
-export const isPassphraseSafe = (wordsArray, rulesConfig) => {
-  const { capitalLetters, symbols, numbers, words } = rulesConfig
+export const isPassphraseSafe = (wordsArray, rulesConfig = {}) => {
+  const {
+    capitalLetters = true,
+    symbols = true,
+    numbers = true,
+    words = 8
+  } = rulesConfig
 
   const rules = {
     minWords: wordsArray?.length >= words,
