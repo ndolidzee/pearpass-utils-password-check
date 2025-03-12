@@ -22,5 +22,5 @@ export const isPasswordSafe = (password, rulesConfig = {}) => {
       : true
   }
 
-  return Object.values(rules).every(Boolean)
+  return { isSafe: Object.values(rules).every(Boolean), rules: rules }
 }

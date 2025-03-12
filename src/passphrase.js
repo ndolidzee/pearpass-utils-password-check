@@ -23,5 +23,5 @@ export const isPassphraseSafe = (wordsArray, rulesConfig = {}) => {
     numbers: numbers ? /\d/.test(wordsArray.join('')) : true
   }
 
-  return Object.values(rules).every(Boolean)
+  return { isSafe: Object.values(rules).every(Boolean), rules: rules }
 }
