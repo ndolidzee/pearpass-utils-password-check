@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "eslint --fix ."
   },
+  "type": "module",
   "devDependencies": {
-    "pearpass-eslint-config": "github:noxtton/pearpass-eslint-config#v0.0.4"
-  },
-  "type": "module"
+    "tether-dev-docs": "github:noxtton/tether-dev-docs#v0.0.2"
+  }
 }
