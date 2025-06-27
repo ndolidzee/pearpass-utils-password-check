@@ -86,3 +86,7 @@ This package has no runtime dependencies.
 - [pearpass-lib-ui-react-native-components](https://github.com/tetherto/pearpass-lib-ui-react-native-components) - A library of React Native UI components for PearPass
 - [pearpass-lib-ui-react-components](https://github.com/noxtton/pearpass-lib-ui-react-components) - A library of React UI components for PearPass
 - [tether-dev-docs](https://github.com/tetherto/tether-dev-docs) - Documentations and guides for developers
+
+## License
+
+This project is licensed under the Apache License, Version 2.0. See the [LICENSE](./LICENSE) file for details.

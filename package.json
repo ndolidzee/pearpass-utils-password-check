@@ -3,6 +3,7 @@
   "version": "0.0.9",
   "description": "utility for checking the strength of password and passphrase",
   "main": "index.js",
+  "license": "Apache-2.0",
   "scripts": {
     "lint": "eslint --fix .",
     "test": "jest"
