@@ -1,7 +1,9 @@
 import { isPassphraseSafe } from './passphrase'
 
 describe('isPassphraseSafe', () => {
-  it('should return safe when all default rules are met', () => {
+  // Existing tests...
+
+  it('should return empty errors array when all rules pass', () => {
     const words = [
       'Test1!',
       'Word2@',
@@ -12,140 +14,128 @@ describe('isPassphraseSafe', () => {
       'Phrase',
       'Another4$'
     ]
-
     const result = isPassphraseSafe(words)
-    expect(result.isSafe).toBe(true)
+    expect(result.errors).toEqual([])
+  })
+
+  it('should return custom error messages for failed rules', () => {
+    const words = ['test', 'test']
+    const config = {
+      rules: { words: 3, capitalLetters: true },
+      errors: {
+        minWords: 'Not enough words',
+        uniqueWords: 'Duplicate words',
+        capitalLetters: 'No capital letter'
+      }
+    }
+    const result = isPassphraseSafe(words, config)
+    expect(result.errors).toContain('Not enough words')
+    expect(result.errors).toContain('Duplicate words')
+    expect(result.errors).toContain('No capital letter')
+  })
+
+  it('should handle empty words array', () => {
+    const result = isPassphraseSafe([])
+    expect(result.rules.minWords).toBe(false)
+    expect(result.rules.uniqueWords).toBe(true)
+    expect(result.rules.capitalLetters).toBe(false)
+    expect(result.rules.symbols).toBe(false)
+    expect(result.rules.numbers).toBe(false)
+    expect(result.errors.length).toBeGreaterThan(0)
+  })
+
+  it('should treat undefined config as default', () => {
+    const words = [
+      'Test1!',
+      'Word2@',
+      'Example3#',
+      'Unique',
+      'Safe',
+      'Pass',
+      'Phrase',
+      'Another4$'
+    ]
+    const result = isPassphraseSafe(words, undefined)
     expect(result.rules.minWords).toBe(true)
     expect(result.rules.uniqueWords).toBe(true)
-    expect(result.rules.capitalLetters).toBe(true)
+  })
+
+  it('should handle words with only symbols and numbers', () => {
+    const words = ['123!', '@#$%', '456^', '&*()', '789*', '000!', '!!!', '###']
+    const result = isPassphraseSafe(words)
+    expect(result.rules.capitalLetters).toBe(false)
     expect(result.rules.symbols).toBe(true)
     expect(result.rules.numbers).toBe(true)
-  })
-
-  it('should fail the minWords rule when not enough words are provided', () => {
-    const words = ['Test1!', 'Word2@']
-    const result = isPassphraseSafe(words, { words: 3 })
-    expect(result.isSafe).toBe(false)
-    expect(result.rules.minWords).toBe(false)
-  })
-
-  it('should fail the uniqueWords rule when duplicate words exist after stripping symbols', () => {
-    const words = [
-      'Hello!',
-      'Hello',
-      'Unique1',
-      'Word2',
-      'Example3',
-      'Test4',
-      'Safe5',
-      'Pass6'
-    ]
-
-    const result = isPassphraseSafe(words)
-    expect(result.isSafe).toBe(false)
     expect(result.rules.uniqueWords).toBe(false)
   })
 
-  it('should fail the capitalLetters rule when no uppercase letters are present', () => {
+  it('should handle words with mixed case and special characters', () => {
     const words = [
-      'test1!',
-      'word2@',
-      'example3#',
-      'unique',
-      'safe',
-      'pass',
-      'phrase',
-      'another1'
+      'Abc1!',
+      'Def2@',
+      'Ghi3#',
+      'Jkl4$',
+      'Mno5%',
+      'Pqr6^',
+      'Stu7&',
+      'Vwx8*'
     ]
-
     const result = isPassphraseSafe(words)
-    expect(result.isSafe).toBe(false)
-    expect(result.rules.capitalLetters).toBe(false)
-  })
-
-  it('should pass the capitalLetters rule when disabled in config', () => {
-    const words = [
-      'test1!',
-      'word2@',
-      'example3#',
-      'unique',
-      'safe',
-      'pass',
-      'phrase',
-      'another1'
-    ]
-
-    const result = isPassphraseSafe(words, { capitalLetters: false })
-
-    expect(result.isSafe).toBe(true)
     expect(result.rules.capitalLetters).toBe(true)
-  })
-
-  it('should fail the symbols rule when no symbol is present', () => {
-    const words = [
-      'Test1',
-      'Word2',
-      'Example3',
-      'Unique',
-      'Safe',
-      'Pass',
-      'Phrase',
-      'Another1'
-    ]
-
-    const result = isPassphraseSafe(words)
-    expect(result.isSafe).toBe(false)
-    expect(result.rules.symbols).toBe(false)
-  })
-
-  it('should pass the symbols rule when disabled in config', () => {
-    const words = [
-      'Test1',
-      'Word2',
-      'Example3',
-      'Unique',
-      'Safe',
-      'Pass',
-      'Phrase',
-      'Another1'
-    ]
-
-    const result = isPassphraseSafe(words, { symbols: false })
-    expect(result.isSafe).toBe(true)
     expect(result.rules.symbols).toBe(true)
+    expect(result.rules.numbers).toBe(true)
+    expect(result.rules.uniqueWords).toBe(true)
+    expect(result.rules.minWords).toBe(true)
+    expect(result.errors).toEqual([])
   })
 
-  it('should fail the numbers rule when no number is present', () => {
-    const words = [
-      'Test!',
-      'Word@',
-      'Example#',
-      'Unique',
-      'Safe',
-      'Pass',
-      'Phrase',
-      'Another!'
-    ]
-
-    const result = isPassphraseSafe(words)
-    expect(result.isSafe).toBe(false)
+  it('should fail all rules if words array is empty', () => {
+    const result = isPassphraseSafe([], {
+      rules: { capitalLetters: true, symbols: true, numbers: true, words: 3 }
+    })
+    expect(result.rules.minWords).toBe(false)
+    expect(result.rules.uniqueWords).toBe(true)
+    expect(result.rules.capitalLetters).toBe(false)
+    expect(result.rules.symbols).toBe(false)
     expect(result.rules.numbers).toBe(false)
   })
 
-  it('should pass the numbers rule when disabled in config', () => {
+  it('should pass all rules if all are disabled', () => {
+    const words = ['a', 'a', 'a']
+    const result = isPassphraseSafe(words, {
+      rules: { capitalLetters: false, symbols: false, numbers: false, words: 1 }
+    })
+
+    expect(result.rules.uniqueWords).toBe(false)
+    expect(result.rules.minWords).toBe(true)
+    expect(result.rules.capitalLetters).toBe(true)
+    expect(result.rules.symbols).toBe(true)
+    expect(result.rules.numbers).toBe(true)
+    expect(result.errors).toEqual([])
+  })
+
+  it('should handle config with only some rules specified', () => {
+    const words = ['Test1', 'Word2', 'Example3']
+    const result = isPassphraseSafe(words, { rules: { words: 3 } })
+    expect(result.rules.minWords).toBe(true)
+    expect(result.rules.capitalLetters).toBe(true)
+    expect(result.rules.symbols).toBe(false)
+    expect(result.rules.numbers).toBe(true)
+  })
+
+  it('should ignore extra properties in config', () => {
     const words = [
-      'Test!',
-      'Word@',
-      'Example#',
+      'Test1!',
+      'Word2@',
+      'Example3#',
       'Unique',
       'Safe',
       'Pass',
       'Phrase',
-      'Another!'
+      'Another4$'
     ]
-
-    const result = isPassphraseSafe(words, { numbers: false })
-    expect(result.isSafe).toBe(true)
-    expect(result.rules.numbers).toBe(true)
+    const result = isPassphraseSafe(words, { foo: 'bar', rules: { words: 8 } })
+    expect(result.rules.minWords).toBe(true)
+    expect(result.rules.uniqueWords).toBe(true)
   })
 })

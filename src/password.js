@@ -1,3 +1,5 @@
+import { getPassStrength } from './utils/getPassStrength'
+
 /**
  * @param {string} password
  * @param {Object} [config={}]
@@ -40,7 +42,7 @@ export const isPasswordSafe = (password, config = {}) => {
   const errorMessages = failedRules.map((rule) => errors[rule])
 
   return {
-    isSafe: failedRules.length === 0,
+    strength: getPassStrength(rulesCheck),
     rules: rulesCheck,
     errors: errorMessages
   }

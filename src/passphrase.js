@@ -1,3 +1,5 @@
+import { getPassStrength } from './utils/getPassStrength'
+
 /**
  * @param {Array<string>} wordsArray
  * @param {{ rules: { capitalLetters?: boolean, symbols?: boolean, numbers?: boolean, words?: number }, errors?: Record<string, string> }} config
@@ -31,7 +33,7 @@ export const isPassphraseSafe = (wordsArray, config = {}) => {
   const errorMessages = failedRules.map((rule) => errors[rule])
 
   return {
-    isSafe: failedRules.length === 0,
+    strength: getPassStrength(rulesCheck),
     rules: rulesCheck,
     errors: errorMessages
   }
