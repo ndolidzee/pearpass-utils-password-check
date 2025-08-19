@@ -41,7 +41,7 @@ import { isPasswordSafe } from 'pearpass-utils-password-check';
 
 // With default rules
 const result = isPasswordSafe('Test123!');
-console.log(result.isSafe); // true
+console.log(result.strength); // strong
 
 // With custom rules
 const customResult = isPasswordSafe('Test1234', {
@@ -51,7 +51,7 @@ const customResult = isPasswordSafe('Test1234', {
     upperCase: true,
     numbers: true
 });
-console.log(customResult.isSafe); // true
+console.log(customResult.strength); // strong
 console.log(customResult.rules); // Detailed rules assessment
 ```
 
@@ -62,7 +62,7 @@ import { isPassphraseSafe } from 'pearpass-utils-password-check';
 // With default rules
 const words = ['Test1!', 'Word2@', 'Example3#', 'Unique', 'Safe', 'Pass', 'Phrase', 'Another4$'];
 const result = isPassphraseSafe(words);
-console.log(result.isSafe); // true
+console.log(result.strength); // strong
 
 // With custom rules
 const customResult = isPassphraseSafe(words, {
@@ -71,7 +71,7 @@ const customResult = isPassphraseSafe(words, {
     numbers: true,
     words: 6
 });
-console.log(customResult.isSafe); // true
+console.log(customResult.strength); // strong
 console.log(customResult.rules); // Detailed rules assessment
 ```
 
